@@ -30,7 +30,7 @@ GEM
     nokogiri (1.10.1-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     public_suffix (3.0.3)
-    rack (2.0.5)
+    rack (2.0.6)
     rack-flash3 (1.0.5)
       rack
     rack-protection (2.0.4)
@@ -61,13 +61,6 @@ GEM
     rspec-support (3.8.0)
     ruby_dep (1.5.0)
     rubyzip (1.2.2)
-    sass (3.7.3)
-      sass-listen (~> 4.0.0)
-    sass-globbing (1.1.5)
-      sass (>= 3.1)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
@@ -93,11 +86,11 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   capybara
+  rack
   rack-flash3
   racksh
   rerun
   rspec
-  sass-globbing
   selenium-webdriver
   sinatra
   slim
