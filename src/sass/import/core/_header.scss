@@ -1,0 +1,44 @@
+header {
+    display: grid;
+    grid-area: '_header';
+    grid-template-columns: 80% 20%;
+    grid-template-areas: '_title _profile';
+    height: 100%;
+    background-color: darkgray;
+
+    .title {
+        display: block;
+        grid-area: '_title';
+        text-align: center;
+        padding-left: 20%;
+        
+        p {
+            display: inline-block;
+            color: blueviolet;
+            font-size: 25px;
+        }
+    }
+    
+    .profile {
+        display: grid;
+        grid-area: '_profile';
+        height: 100%;
+        
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            margin: auto;
+
+            > a, a > input {
+                max-width: 50px; 
+                max-height: 50px;
+            }
+        }
+        
+        .profile-options  {
+            display: grid;
+            margin: auto;
+            text-align: center;
+        }
+    }
+}

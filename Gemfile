@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem 'sinatra'
+gem 'slim'
+gem 'sqlite3'
+gem 'rerun'
+gem 'bcrypt'
+gem 'rack-flash3'
+gem 'capybara'
+gem 'rspec'
+gem 'selenium-webdriver'
+gem 'racksh'

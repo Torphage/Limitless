@@ -1,0 +1,15 @@
+header
+    .title
+        a href="/"
+            p Limitless
+    .profile
+        - if @user.logged_in?
+            .profile-icon
+                a href="/profile/#{@user.data[:id]}"
+                    input type="image" src="/img/#{@user.data[:profile_pic]}" alt=""
+                form action="/logout" method="post"
+                    input.profile-button type="submit" value="Logout"
+        - else
+            .profile-options
+                a.profile-button href='/login' Login
+                a.profile-button href='/signup' Sign Up

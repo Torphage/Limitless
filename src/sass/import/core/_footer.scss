@@ -1,0 +1,83 @@
+footer {
+    display: grid;
+    margin-top: auto;
+    // position: absolute;
+    // bottom: 0;
+    min-height: 25vh;
+    max-height: 25vh;
+    // height: 241px;
+    width: 100vw;
+    grid-area: '_footer';
+    grid-template-areas:
+        '_quote',
+        '_links';
+    grid-template-rows: 70% 30%;
+    background-color: #242729;
+    
+    .quote {
+        display: grid;
+        grid-area: '_quote';
+        align-content: center;
+
+        p {
+            text-decoration-line: none;
+            color: #B2BEC8;
+            text-align: center;
+        }
+    }
+    
+    .links {
+        width: 100%;
+        grid-area: '_links';
+        display: grid;
+        grid-template-columns: 80vw 20vw;
+        grid-template-rows: 100%;
+        grid-template-areas:
+            '_socialmedias _info';
+
+        .social-medias {
+            display: grid;
+            grid-area: '_socialmedias';
+            align-content: center;
+            justify-content: center;
+            padding-left: 20vw;
+        }
+        
+        .info {
+            display: grid;
+            grid-area: '_info';
+            grid-template-rows: 50% 50%;
+            grid-template-areas:
+                '_title',
+                '_item';
+    
+            a {
+                text-decoration-line: none;
+                text-align: center;
+            }
+    
+            .title {
+                grid-area: '_title';
+                padding-top: 10px;
+                text-align: center;
+                
+                a {
+                    color: #848d95;
+                    font-size: 13px;
+                }
+            }
+            
+            .item {
+                grid-area: '_item';
+                text-align: center;
+                
+                a {
+                    margin-left: 5px;
+                    margin-right: 5px;
+                    color: #6a737c;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
