@@ -1,8 +1,10 @@
 class User
-    attr_reader :data
+    attr_reader :data, :errors, :success
     
     def initialize()
         @data = nil
+        @errors = {}
+        @success = ""
     end
 
     def store_data(db_array)
@@ -16,6 +18,10 @@ class User
             profile_pic: db_array[6]
         }
     end
+
+    def get_flash()
+        return @errors
+    end
     
     def authenticate(params)
         db = SQLite3::Database.new('db/data.db')
@@ -23,27 +29,36 @@ class User
 
         user = db.execute('SELECT id, password FROM users WHERE username=?', [params['username']])
 
-        if user.length == 0
+        if user.empty?()
+            @errors[:login] = 'Failed do login, user does not exist'
             return false
         end
-
+        
         if BCrypt::Password.new(user[0]['password']) == params['password']
             result = db.execute('SELECT * FROM users WHERE username=?', [params['username']])[0]
             self.store_data(result)
+            @success = 'Login successful'
             return true
         else
+            @errors[:login] = 'Failed do login, wrong password'
             return false
         end
     end
-
+    
     def signup(params)
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
 
-        p params
-        if db.execute('SELECT id FROM users WHERE username=?', [params[:username]]).length != 0
+        email_validation_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+        if (params['email'] =~ email_validation_regex).nil?()
+            @errors[:signup] = 'Email is not correct, please use a valid email address'
             return false
-        elsif db.execute('SELECT id FROM users WHERE email=?', [params[:email]]).length != 0
+        elsif not db.execute('SELECT id FROM users WHERE username=?', [params['username']]).empty?()
+            @errors[:signup] = 'Failed do sign up, username already taken'
+            return false
+        elsif not db.execute('SELECT id FROM users WHERE email=?', [params['email']]).empty?()
+            @errors[:signup] = 'Failed do sign up, email already in use'
             return false
         end
 
@@ -57,13 +72,14 @@ class User
         ])
 
         result = db.execute('SELECT * FROM users WHERE username=?', [params['username']])[0]
-        p result
         self.store_data(result)
+
+        @success = "Sign up successful"
         return true
     end
 
     def logged_in?()
-        if self.data != nil
+        if @data != nil
             return true
         else
             return false
@@ -77,11 +93,10 @@ class User
     def self.all()
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
-        # db.execute('INSERT INTO users (firstName, lastName, email, username, password, profilePic) VALUES (?, ?, ?, ?, ?, ?)', [
-        #     'mika', 'ansersson', 'filip.a@gmail.com', 'torphage', 'somethinghashed', nil
-        # ])
+
         result = db.execute('SELECT * FROM users')
         result.map { |row| self.new().store_data(row) }
+
         p result
     end
     

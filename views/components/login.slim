@@ -3,6 +3,9 @@ main
         .title
             p Log In
         form action='/login' method='post' enctype='multipart/form-data'
+            - if flash[:errors] && flash[:errors][:login]
+                span.error= flash[:errors][:login]
+            br
             label for='username' Username: 
             input name='username' type='text'
             br

@@ -1,6 +1,9 @@
 main
     .profile-box
         form action='/signup' method='post' enctype='multipart/form-data'
+            - if flash[:errors] && flash[:errors][:signup]
+                span.error= flash[:errors][:signup]
+            br
             label for='first_name' First Name: 
             input name='first_name' type='text'
             br

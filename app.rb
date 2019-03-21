@@ -7,19 +7,18 @@ class App < Sinatra::Base
     use Rack::Flash
 
     before() do
-        p session
         if session[:user_id]
             @user = User.get(session[:user_id])
         else
             @user = User.new()
         end
-        p @user
-        # p @user.data
     end
 
     get('/') do
         db = SQLite3::Database.open('db/data.db')
-        # User.all()
+        db.results_as_hash = true
+        @docs = db.execute('SELECT * FROM documents')
+        p @docs
         slim(:'components/index')
     end
 
@@ -33,10 +32,14 @@ class App < Sinatra::Base
     
     post('/signup') do
         if @user.signup(params)
+            flash[:errors] = @user.errors
             session[:user_id] = @user.data[:id]
+
             redirect('/')
         else
-            redirect('/signup')
+            flash[:errors] = @user.errors
+
+            redirect(back)
         end
     end
 
@@ -46,17 +49,21 @@ class App < Sinatra::Base
 
     post('/login') do
         if @user.authenticate(params)
-            p @user
+            flash[:errors] = @user.errors
             session[:user_id] = @user.data[:id]
+
             redirect('/')
         else
-            redirect('/login')
+            flash[:errors] = @user.errors
+
+            redirect(back)
         end
     end
 
     post('/logout') do
         @user.logout()
         session[:user_id] = nil
+
         redirect(back)
     end
 end
