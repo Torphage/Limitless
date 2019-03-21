@@ -7,16 +7,15 @@ footer {
     max-height: 25vh;
     // height: 241px;
     width: 100vw;
-    grid-area: '_footer';
-    grid-template-areas:
-        '_quote',
-        '_links';
+    grid-area: _footer;
+    grid-template-areas: '_quote'
+                         '_links';
     grid-template-rows: 70% 30%;
     background-color: #242729;
     
     .quote {
         display: grid;
-        grid-area: '_quote';
+        grid-area: _quote;
         align-content: center;
 
         p {
@@ -28,7 +27,7 @@ footer {
     
     .links {
         width: 100%;
-        grid-area: '_links';
+        grid-area: _links;
         display: grid;
         grid-template-columns: 80vw 20vw;
         grid-template-rows: 100%;
@@ -37,7 +36,7 @@ footer {
 
         .social-medias {
             display: grid;
-            grid-area: '_socialmedias';
+            grid-area: _socialmedias;
             align-content: center;
             justify-content: center;
             padding-left: 20vw;
@@ -45,10 +44,10 @@ footer {
         
         .info {
             display: grid;
-            grid-area: '_info';
+            grid-area: _info;
             grid-template-rows: 50% 50%;
             grid-template-areas:
-                '_title',
+                '_title'
                 '_item';
     
             a {
@@ -57,7 +56,7 @@ footer {
             }
     
             .title {
-                grid-area: '_title';
+                grid-area: _title;
                 padding-top: 10px;
                 text-align: center;
                 
@@ -68,7 +67,7 @@ footer {
             }
             
             .item {
-                grid-area: '_item';
+                grid-area: _item;
                 text-align: center;
                 
                 a {

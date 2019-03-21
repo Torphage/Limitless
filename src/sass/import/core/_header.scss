@@ -1,6 +1,6 @@
 header {
     display: grid;
-    grid-area: '_header';
+    grid-area: _header;
     grid-template-columns: 80% 20%;
     grid-template-areas: '_title _profile';
     height: 100%;
@@ -8,7 +8,7 @@ header {
 
     .title {
         display: block;
-        grid-area: '_title';
+        grid-area: _title;
         text-align: center;
         padding-left: 20%;
         
@@ -21,7 +21,7 @@ header {
     
     .profile {
         display: grid;
-        grid-area: '_profile';
+        grid-area: _profile;
         height: 100%;
         
         .profile-icon {

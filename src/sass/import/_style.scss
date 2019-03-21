@@ -7,10 +7,9 @@ body {
         height: 100%;
         width: 100%;
         display: grid;
-        grid-template-areas: 
-            '_header',             
-            '_main',
-            '_footer';
+        grid-template-areas: '_header'             
+                             '_main'
+                             '_footer';
         grid-template-rows: 79px auto 25vh;
     }
 }

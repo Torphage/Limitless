@@ -1,7 +1,32 @@
 main {
     display: grid;
-    grid-area: '_main';
+    grid-area: _main;
     grid-template-areas: '_profile-box';
+    padding-bottom: 25vh;
+    height: 100%;
+    
+    #content {
+        display: grid;
+        grid-area: _profile-box;
+        height: 100%;
+        margin-left: 15%;
+        margin-right: 15%;
+        
+        .articles {
+            display: grid;
+            height: 100%;
+            width: 100%;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(auto-fill, 300px);
+            grid-gap: 5%;
+            grid-auto-rows: 300px;
+    
+            article {
+                display: grid;
+                background-color: antiquewhite;
+            }
+        }
+    }
 }
 
 .profile-box {
@@ -12,7 +37,6 @@ main {
     margin-top: 5%;
     margin-bottom: 5%;
     height: 70%;
-    // padding-bottom: 10%;
     background-color: powderblue;
 
     .title p {
