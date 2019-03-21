@@ -1,4 +1,10 @@
 main
     #content
-        p This is the main page
-    / p = @user.data
+        .articles
+            - if @user.logged_in?()
+                - for doc in @docs
+                    article
+                        .title
+                            p = doc[:title]
+                        .preview
+                            img src="/img/#{doc[:preview]}" alt="Doc Post"
