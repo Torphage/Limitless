@@ -1,16 +1,17 @@
 require 'rack-flash'
 require_relative 'models/user'
+require_relative 'models/document'
 
 class App < Sinatra::Base
-
+    
     enable :sessions
     use Rack::Flash
 
     before() do
         if session[:user_id]
-            @user = User.get(session[:user_id])
+            @current_user = User.get(session[:user_id])
         else
-            @user = User.new()
+            @current_user = User.new()
         end
     end
 
@@ -18,7 +19,7 @@ class App < Sinatra::Base
         db = SQLite3::Database.open('db/data.db')
         db.results_as_hash = true
         @docs = db.execute('SELECT * FROM documents')
-        p @docs
+        # p @docs
         slim(:'components/index')
     end
 
@@ -31,13 +32,13 @@ class App < Sinatra::Base
     end
     
     post('/signup') do
-        if @user.signup(params)
-            flash[:errors] = @user.errors
-            session[:user_id] = @user.data[:id]
+        if @current_user.signup(params)
+            flash[:errors] = @current_user.errors
+            session[:user_id] = @current_user.data[:id]
 
             redirect('/')
         else
-            flash[:errors] = @user.errors
+            flash[:errors] = @current_user.errors
 
             redirect(back)
         end
@@ -48,22 +49,46 @@ class App < Sinatra::Base
     end
 
     post('/login') do
-        if @user.authenticate(params)
-            flash[:errors] = @user.errors
-            session[:user_id] = @user.data[:id]
+        if @current_user.authenticate(params)
+            flash[:errors] = @current_user.errors
+            session[:user_id] = @current_user.data[:id]
 
             redirect('/')
         else
-            flash[:errors] = @user.errors
+            flash[:errors] = @current_user.errors
 
             redirect(back)
         end
     end
 
     post('/logout') do
-        @user.logout()
+        @current_user.logout()
         session[:user_id] = nil
 
+        redirect(back)
+    end
+
+    get('/profile/:id') do
+        db = SQLite3::Database.open('db/data.db')
+        db.results_as_hash = true
+        @docs = db.execute('SELECT * FROM documents')
+        @user = User.get(params['id'])
+
+        slim(:'components/user')
+    end
+
+    get('/document/:id') do
+        @doc = Document.get(params['id'])
+
+        p @doc
+        slim(:'components/document')
+    end
+
+    post('/save/:id') do
+        @doc = Document.get(params['id'])
+        @doc.save(params)
+
+        p "saved!!!!"
         redirect(back)
     end
 end

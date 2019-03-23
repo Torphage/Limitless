@@ -1,0 +1,17 @@
+.document {
+    display: grid;
+    height: auto;
+
+    form {
+        display: grid;
+        justify-items: center;
+
+        textarea {
+            width: 100%;
+            height: fit-content;
+            display: block;
+            max-width: 100%;
+            resize: none;
+        }
+    }
+}

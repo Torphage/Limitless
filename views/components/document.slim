@@ -1,0 +1,5 @@
+main
+    #content
+        .document
+            form#edit-form action="/save/#{@doc.data[:id]}" method="post"
+                textarea#edit name="textContent" =@doc.data[:textContent]

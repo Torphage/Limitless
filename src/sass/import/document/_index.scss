@@ -2,29 +2,51 @@ main {
     display: grid;
     grid-area: _main;
     grid-template-areas: '_profile-box';
-    padding-bottom: 25vh;
-    height: 100%;
+    padding-bottom: 241px;
     
     #content {
         display: grid;
         grid-area: _profile-box;
-        height: 100%;
+        height: auto;
         margin-left: 15%;
         margin-right: 15%;
         
         .articles {
             display: grid;
-            height: 100%;
-            width: 100%;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(auto-fill, 300px);
+            height: auto;
+            grid-template-columns: repeat(4, auto);
+            grid-auto-rows: 340px;
             grid-gap: 5%;
-            grid-auto-rows: 300px;
     
             article {
                 display: grid;
-                background-color: antiquewhite;
+                height: 340px;
+                grid-row: auto;
+                grid-template-rows: 300px 40px;
+                
+                .preview {
+                    display: grid;
+                    grid-row: span 1;
+                    background-color: antiquewhite;
+                }
+                
+                .title {
+                    display: grid;
+                    grid-row: span 1;
+                    text-align: center;
+
+                    p {
+                    }
+                }
             }
+        }
+
+        #profile {
+            display: grid;
+            height: 400px;
+            // margin-top: 20%;
+            // align-items: center;
+            margin: auto;
         }
     }
 }

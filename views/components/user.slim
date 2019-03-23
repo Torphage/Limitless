@@ -1,5 +1,8 @@
 main
     #content
+        #profile
+            .picture
+                img src="/img/#{@user.data[:profile_pic]}" alt="Doc Post"
         .articles
             - if @current_user.logged_in?()
                 - for doc in @docs

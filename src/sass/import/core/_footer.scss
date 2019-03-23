@@ -1,12 +1,9 @@
 footer {
     display: grid;
     margin-top: auto;
-    // position: absolute;
-    // bottom: 0;
     min-height: 25vh;
     max-height: 25vh;
-    // height: 241px;
-    width: 100vw;
+    height: 241px;
     grid-area: _footer;
     grid-template-areas: '_quote'
                          '_links';
@@ -26,20 +23,18 @@ footer {
     }
     
     .links {
-        width: 100%;
         grid-area: _links;
         display: grid;
-        grid-template-columns: 80vw 20vw;
+        grid-template-columns: 20% 60% 20%;
         grid-template-rows: 100%;
         grid-template-areas:
-            '_socialmedias _info';
+            '. _socialmedias _info';
 
         .social-medias {
             display: grid;
             grid-area: _socialmedias;
             align-content: center;
             justify-content: center;
-            padding-left: 20vw;
         }
         
         .info {

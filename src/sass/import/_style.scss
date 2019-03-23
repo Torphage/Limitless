@@ -1,16 +1,15 @@
 body {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     margin: 0px;
 
     .container {
         height: 100%;
-        width: 100%;
         display: grid;
         grid-template-areas: '_header'             
                              '_main'
                              '_footer';
-        grid-template-rows: 79px auto 25vh;
+        grid-template-rows: 79px auto 241px;
     }
 }
 

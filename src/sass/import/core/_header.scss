@@ -1,8 +1,8 @@
 header {
     display: grid;
     grid-area: _header;
-    grid-template-columns: 80% 20%;
-    grid-template-areas: '_title _profile';
+    grid-template-columns: 20% 60% 20%;
+    grid-template-areas: '. _title _profile';
     height: 100%;
     background-color: darkgray;
 
@@ -10,7 +10,6 @@ header {
         display: block;
         grid-area: _title;
         text-align: center;
-        padding-left: 20%;
         
         p {
             display: inline-block;

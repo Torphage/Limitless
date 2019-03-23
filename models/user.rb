@@ -96,8 +96,6 @@ class User
 
         result = db.execute('SELECT * FROM users')
         result.map { |row| self.new().store_data(row) }
-
-        p result
     end
     
     def self.get(user_id)
