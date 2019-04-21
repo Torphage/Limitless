@@ -29,7 +29,7 @@ function removeTextarea(page) {
     console.log(page)
     $.ajax({
         type: "POST",
-        url: '/delete' + $('#edit-form').attr('action').slice(5),
+        url: '/page/delete' + $('#edit-form').attr('action').slice(5),
         data: { pageInt: page }
     })
 }
