@@ -80,15 +80,18 @@ class App < Sinatra::Base
     get('/document/:id') do
         @doc = Document.get(params['id'])
 
-        p @doc
         slim(:'components/document')
     end
 
     post('/save/:id') do
         @doc = Document.get(params['id'])
-        @doc.save(params)
 
-        p "saved!!!!"
-        redirect(back)
+        @doc = @doc.save(params)
+    end
+
+    post('/page/delete/:id') do
+        @doc = Document.get(params['id'])
+        p params
+        @doc = @doc.deletePage(params['pageInt'])
     end
 end
