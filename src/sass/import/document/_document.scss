@@ -7,11 +7,14 @@
         justify-items: center;
 
         textarea {
+            background-color: aliceblue;
+            // margin-top: 5px;
             width: 100%;
-            height: fit-content;
+            height: 1200px;
             display: block;
             max-width: 100%;
             resize: none;
+            line-height: 20px;
         }
     }
 }
