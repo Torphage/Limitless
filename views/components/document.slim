@@ -2,4 +2,6 @@ main
     #content
         .document
             form#edit-form action="/save/#{@doc.data[:id]}" method="post"
-                textarea#edit name="textContent" =@doc.data[:textContent]
+                - for page in @doc.data[:pages].data
+                    / p #{page[:textContent].to_s}
+                    textarea name="textContent" = page[:textContent]
