@@ -1,6 +1,9 @@
 require 'rack-flash'
+require 'json'
+require_relative 'models/model'
 require_relative 'models/user'
 require_relative 'models/document'
+require_relative 'models/page'
 
 class App < Sinatra::Base
     
@@ -80,18 +83,28 @@ class App < Sinatra::Base
     get('/document/:id') do
         @doc = Document.get(params['id'])
 
-        slim(:'components/document')
+        if @current_user.data == nil
+            slim(:'components/index')
+        else
+            if @doc.data[:users].include?(@current_user.data[:id].to_s)
+                slim(:'components/document')
+            else
+                slim(:'components/index')
+            end
+        end
     end
 
     post('/save/:id') do
         @doc = Document.get(params['id'])
 
-        @doc = @doc.save(params)
+        change = JSON.parse(request.body.read, symbolize_names: true)
+
+        @doc = @doc.save(params, change)
     end
 
     post('/page/delete/:id') do
         @doc = Document.get(params['id'])
-        p params
+
         @doc = @doc.deletePage(params['pageInt'])
     end
 end
