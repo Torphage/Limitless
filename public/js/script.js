@@ -1,3 +1,5 @@
+let oldTextarea = [];
+
 function numOfLines(element) {
     var taLineHeight = 20; // This should match the line-height in the CSS
     var taHeight = element.scrollHeight; // Get the scroll height of the textarea
@@ -14,11 +16,17 @@ function getCurrentElementChildIndex(elem) {
 
 function saveTextarea(element) {
     const page = getCurrentElementChildIndex(element)
+
+    const dmp = new diff_match_patch()
+    const changed = dmp.diff_main(oldTextarea[page - 1], element.value)
     if (page < 1) { return; }
+
     $.ajax({
         type: "POST",
         url: $('#edit-form').attr('action'),
-        data: { textContent: element.value, pageInt: page },
+        data: JSON.stringify({ textContent: changed, pageInt: page }),
+        dataType: "json",
+        contentType: 'application/json;charset=UTF-8',
         success: () => {
             $("#lastUpdate").html(new Date().getTime())
         }
@@ -79,6 +87,7 @@ function createNewTextarea() {
     applyEventListeners(element);
     document.getElementById("edit-form").appendChild(element);
     element.focus();
+    oldTextarea.push(element.value)
 }
 
 function focusPrevTextarea(element) {
@@ -104,6 +113,7 @@ function deleteTextarea(element) {
 
     const page = getCurrentElementChildIndex(element);
     removeTextarea(page);
+    oldTextarea = oldTextarea.splice(page - 1, 1)
 
     const sibling = element.previousElementSibling;
     sibling.focus();
@@ -113,6 +123,6 @@ function deleteTextarea(element) {
 }
 
 for (const element of document.getElementById("edit-form")) {
-    console.log("yo")
+    oldTextarea.push(element.value)
     applyEventListeners(element);
 }
