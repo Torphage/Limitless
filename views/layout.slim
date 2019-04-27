@@ -7,11 +7,12 @@ html lang='en'
         link rel='stylesheet' href='/css/style.css'
         script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
         script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
-        script src="/js/autoresize.js"
+        / script src="/js/autoresize.js"
         title Document
     body
         .container
             == slim(:'core/header')
             == yield
             == slim(:'core/footer')
+        script src="/js/diff_match_patch.js"
         script src="/js/script.js"
