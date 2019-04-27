@@ -1,6 +1,8 @@
-class User
+class User < Model
     attr_reader :data, :errors, :success
     
+    table User.name.downcase() + "s"
+
     def initialize()
         @data = nil
         @errors = {}
