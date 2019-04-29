@@ -29,22 +29,24 @@ class Page < Model
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
         
-        existing_pages = Page.read([["id"], {pageInt: params['pageInt']}])
+        updated = self.save_change(params)
+        p updated
+        existing_pages = Page.read([["id"], {pageInt: params[:pageInt]}])
 
         if existing_pages.length == 0
             Page.create({
-                textContent: params['textContent'],
+                textContent: updated,
                 documentId: @documentId,
-                pageInt: params['pageInt']
+                pageInt: params[:pageInt]
             })
-        else 
+        else
             Page.update([
                 {
-                    textContent: params['textContent']
+                    textContent: updated
                 },
                 {
                     documentId: @documentId,
-                    pageInt: params['pageInt']
+                    pageInt: params[:pageInt]
                 }
             ])
         end
@@ -58,7 +60,18 @@ class Page < Model
         self.store_data(pages)
     end
 
-    def self.get(document_id)
+    def save_change(params)
+        textContent = Page.read([["textContent"], {pageInt: params[:pageInt]}])
+        newText = ""
+        params[:textContent].each do |element|
+            if element[:"0"] == 0 or element[:"0"] == 1
+                newText += element[:"1"]
+            end
+        end
+        return newText
+    end
+
+    def self.get_pages(document_id)
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
         

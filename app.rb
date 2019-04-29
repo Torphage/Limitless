@@ -99,7 +99,7 @@ class App < Sinatra::Base
 
         change = JSON.parse(request.body.read, symbolize_names: true)
 
-        @doc = @doc.save(params, change)
+        @doc = @doc.save(change)
     end
 
     post('/page/delete/:id') do
