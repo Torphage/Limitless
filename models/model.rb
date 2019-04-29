@@ -3,6 +3,26 @@ class Model
         @table = table
     end
 
+    def self.get(id)
+        db = SQLite3::Database.new('db/data.db')
+        db.results_as_hash = true
+        
+        result = db.execute("SELECT * FROM #{@table} WHERE id=?", [id])[0]
+
+        instance = self.new()
+        instance.store_data(result)
+        
+        return instance
+    end
+
+    def self.all()
+        db = SQLite3::Database.new('db/data.db')
+        db.results_as_hash = true
+
+        result = db.execute("SELECT * FROM #{@table}")
+        result.map { |row| self.new().store_data(row) }
+    end
+
     def self.create(dict)
         db = SQLite3::Database.new('db/data.db')
 
@@ -12,13 +32,13 @@ class Model
     def self.read(dict)
         db = SQLite3::Database.new('db/data.db')
 
-        db.execute("SELECT #{dict[0].join(", ")} FROM #{@table} WHERE #{dict[1].keys.map{ |k| "#{k}=?"}.join(' AND ')}", dict[1].values.map{ |v| v})
+        return db.execute("SELECT #{dict[0].join(", ")} FROM #{@table} WHERE #{dict[1].keys.map{ |k| "#{k}=?"}.join(' AND ')}", dict[1].values.map{ |v| v})
     end
 
     def self.update(dict)
         db = SQLite3::Database.new('db/data.db')
 
-        db.execute("UPDATE #{@table} SET #{dict.map{ |value| value.keys.map{ |k| "#{k}=?"}.join(",")}.join(' WHERE ')}", dict.map{ |temp| temp.values.map{ |v| v } })
+        db.execute("UPDATE #{@table} SET #{dict[0].keys.map{ |k| "#{k}=?"}.join(", ")} WHERE #{dict[1].keys.map{ |k| "#{k}=?" }.join(" AND ")}", dict.map{ |temp| temp.values.map{ |v| v } }.flatten())
     end
 
     def self.delete(dict)

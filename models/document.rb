@@ -11,7 +11,7 @@ class Document < Model
             title:	     db_array[1],
             owner: 		 db_array[2],
             preview:	 db_array[3],
-            pages:       Page.get(db_array[0]),
+            pages:       Page.get_pages(db_array[0]),
             users:       Document.allowedUsers(db_array[0], db_array[2])
         }
     end
@@ -32,11 +32,8 @@ class Document < Model
         db.execute('DELETE FROM pages WHERE documentId=? AND pageInt=?', [@data[:id], page])
     end
 
-    def save(params, change)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        if params["pageInt"].to_i >= 1
+    def save(params)
+        if params[:pageInt] >= 1
             @data[:pages].save(params)
         end
 
@@ -51,25 +48,5 @@ class Document < Model
         allowed_users << owner_id
 
         return allowed_users
-    end
-
-    def self.all()
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        result = db.execute('SELECT * FROM documents')
-        result.map { |row| self.new().store_data(row) }
-    end
-    
-    def self.get(document_id)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-        
-        document = db.execute('SELECT * FROM documents WHERE id=?', [document_id])[0]
-
-        instance = self.new()
-        instance.store_data(document)
-
-        return instance
     end
 end

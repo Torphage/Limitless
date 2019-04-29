@@ -91,24 +91,4 @@ class User < Model
     def logout()
         @data = nil
     end
-    
-    def self.all()
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        result = db.execute('SELECT * FROM users')
-        result.map { |row| self.new().store_data(row) }
-    end
-    
-    def self.get(user_id)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-        
-        user = db.execute('SELECT * FROM users WHERE id=?', [user_id])[0]
-
-        instance = self.new()
-        instance.store_data(user)
-
-        return instance
-    end
 end
