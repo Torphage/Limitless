@@ -51,8 +51,8 @@ class Document < Model
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
 
-        allowed_users = db.execute('SELECT userId FROM documents_users WHERE documentId=?', [document_id])
-        allowed_users << owner_id
+        allowed_users = db.execute('SELECT userId FROM users_documents WHERE documentId=?', [document_id]).map{ |user| user['userId'] }.flatten()
+        allowed_users << owner_id.to_i
 
         return allowed_users
     end
