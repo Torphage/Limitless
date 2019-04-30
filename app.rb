@@ -19,10 +19,8 @@ class App < Sinatra::Base
     end
 
     get('/') do
-        db = SQLite3::Database.open('db/data.db')
-        db.results_as_hash = true
-        @docs = db.execute('SELECT * FROM documents')
-        # p @docs
+        @docs = Document.all()
+
         slim(:'components/index')
     end
 
@@ -72,26 +70,36 @@ class App < Sinatra::Base
     end
 
     get('/profile/:id') do
-        db = SQLite3::Database.open('db/data.db')
-        db.results_as_hash = true
-        @docs = db.execute('SELECT * FROM documents')
+        @docs = Document.all()
         @user = User.get(params['id'])
 
         slim(:'components/user')
     end
 
-    get('/document/:id') do
+    post('/document/:id') do
         @doc = Document.get(params['id'])
 
         if @current_user.data == nil
-            slim(:'components/index')
+            redirect('/')
         else
             if @doc.data[:users].include?(@current_user.data[:id].to_s)
-                slim(:'components/document')
+                redirect('/')
             else
-                slim(:'components/index')
+                redirect("/document/#{params["id"]}")
             end
         end
+    end
+
+    get('/document/:id') do
+        @doc = Document.get(params['id'])
+
+        slim(:'components/document')
+    end
+
+    post('/document/create') do
+        @current_user.create_document(params)
+
+        redirect('/')
     end
 
     post('/save/:id') do
