@@ -23,6 +23,13 @@ class Document < Model
         int = db.execute('SELECT pageInt FROM pages WHERE documentId ORDER BY documentId ASC', [@data[:id]]) + 1
 
         db.execute('INSERT INTO pages (textContent, documentId, pageInt) VALUES (?, ?, ?)', [params['textContent'], @data[:id], int])
+        index = 0
+        @data[:pages].each do |page|
+            if page.data[:id] == int
+                @data[:pages].delete_at(index)
+            end
+            i += 1
+        end
     end
 
     def deletePage(page)
