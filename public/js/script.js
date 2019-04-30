@@ -20,7 +20,7 @@ function saveTextarea(element) {
     const dmp = new diff_match_patch()
     const changed = dmp.diff_main(oldTextarea[page - 1], element.value)
     if (page < 1) { return; }
-
+    console.log(page)
     $.ajax({
         type: "POST",
         url: $('#edit-form').attr('action'),
@@ -68,8 +68,8 @@ function onKeyUp(element, event) {
     }
 }
 
+let timeoutId;
 function applyEventListeners(element) {
-    let timeoutId;
 
     element.addEventListener("input", () => {
         clearTimeout(timeoutId);
@@ -110,6 +110,7 @@ function focusNextTextarea(element) {
 function deleteTextarea(element) {
     element.removeEventListener("keydown", onKeyDown)
     element.removeEventListener("keyup", onKeyUp)
+    clearTimeout(timeoutId)
 
     const page = getCurrentElementChildIndex(element);
     removeTextarea(page);
