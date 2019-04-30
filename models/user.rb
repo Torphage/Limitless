@@ -91,4 +91,17 @@ class User < Model
     def logout()
         @data = nil
     end
+
+    def create_document(params)
+        db = SQLite3::Database.new('db/data.db')
+        db.results_as_hash = true
+
+        db.execute('INSERT INTO documents (title, owner, preview) VALUES (?, ?, "4f8ca52e-e888-4491-8f45-bb422b08c2a8")', [params["title"], @data[:id]])
+        document_id = db.execute('SELECT last_insert_rowid()')[0][0]
+        
+        params["guests"].split(",").map{ |guest| guest.strip() }.each do |guest|
+            guest_id = db.execute('SELECT id FROM users WHERE username=?', [guest])[0]["id"]
+            db.execute('INSERT INTO users_documents (userId, documentId) VALUES (?, ?)', [guest_id, document_id])
+        end
+    end
 end
