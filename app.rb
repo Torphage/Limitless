@@ -12,7 +12,7 @@ class App < Sinatra::Base
 
     before() do
         if session[:user_id]
-            @current_user = User.get(session[:user_id])
+            @current_user = User.get("id", session[:user_id])
         else
             @current_user = User.new()
         end
@@ -71,13 +71,19 @@ class App < Sinatra::Base
 
     get('/profile/:id') do
         @docs = Document.all()
-        @user = User.get(params['id'])
+        @user = User.get("id", params['id'])
 
         slim(:'components/user')
     end
 
+    post('/document/create') do
+        @current_user.create_document(params)
+
+        redirect('/')
+    end
+
     post('/document/:id') do
-        @doc = Document.get(params['id'])
+        @doc = Document.get("id", params['id'])
 
         if @current_user.data == nil
             redirect('/')
@@ -91,19 +97,13 @@ class App < Sinatra::Base
     end
 
     get('/document/:id') do
-        @doc = Document.get(params['id'])
+        @doc = Document.get("id", params['id'].to_i)
 
         slim(:'components/document')
     end
 
-    post('/document/create') do
-        @current_user.create_document(params)
-
-        redirect('/')
-    end
-
     post('/save/:id') do
-        @doc = Document.get(params['id'])
+        @doc = Document.get("id", params['id'].to_i)
 
         change = JSON.parse(request.body.read, symbolize_names: true)
 
@@ -111,7 +111,7 @@ class App < Sinatra::Base
     end
 
     post('/page/delete/:id') do
-        @doc = Document.get(params['id'])
+        @doc = Document.get("id", params['id'].to_i)
 
         @doc = @doc.deletePage(params['pageInt'])
     end

@@ -4,9 +4,9 @@ main
             - for doc in @docs
                 article
                     .preview
-                        img src="/img/#{doc[:preview]}" alt="Doc Post"
+                        img src="/img/#{doc.data[:preview]}" alt="Doc Post"
                     .title
                         - if @current_user.logged_in?()
-                            - if doc[:users].include?(@current_user.data[:id])
-                                form action="/document/#{doc[:id]}" method="post"
-                                    button type="submit" = doc[:title]
+                            - if doc.data[:users].include?(@current_user.data[:id])
+                                form action="/document/#{doc.data[:id]}" method="post"
+                                    button type="submit" = doc.data[:title]

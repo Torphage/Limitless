@@ -21,14 +21,14 @@ class Seeder
                                             textContent VARCHAR(255),
                                             owner VARCHAR(255) NOT NULL)')
 
-        db.execute('DROP TABLE IF EXISTS users_documents')
+        db.execute('DROP TABLE IF EXISTS documents_users')
 
-        db.execute('CREATE TABLE users_documents (userId INTEGER NOT NULL,
+        db.execute('CREATE TABLE documents_users (userId INTEGER NOT NULL,
                                                   documentId INTEGER NOT NULL)')
                                             
         pp(db.execute("SELECT * FROM users"))
         pp(db.execute("SELECT * FROM documents"))
-        pp(db.execute("SELECT * FROM users_documents"))
+        pp(db.execute("SELECT * FROM documents_users"))
         
     end
     
@@ -37,7 +37,7 @@ class Seeder
 
         pp(db.execute("SELECT * FROM users"))
         pp(db.execute("SELECT * FROM documents"))
-        pp(db.execute("SELECT * FROM users_documents"))
+        pp(db.execute("SELECT * FROM documents_users"))
     end
 end
 

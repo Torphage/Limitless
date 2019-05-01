@@ -2,17 +2,6 @@ class Page < Model
     attr_accessor :data, :documentId
 
     table Page.name.downcase() + "s"
-    
-    def initialize(document_id)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        if Page.read([["id"], {documentId: document_id}]).length == 0
-            db.execute('INSERT INTO pages (textContent, documentId, pageInt) VALUES ("", ?, 1)', [document_id])
-        end
-
-        @documentId = document_id
-    end
 
     def store_data(db_array)
         @data = []
@@ -20,6 +9,7 @@ class Page < Model
             @data << {
                 id: 		 data[0],
                 textContent: data[1],
+                documentId:  data[2],
                 pageInt:     data[3]
             }
         end
@@ -30,38 +20,24 @@ class Page < Model
         db.results_as_hash = true
         
         updated = self.save_change(params)
-        p updated
-        existing_pages = Page.read([["id"], {pageInt: params[:pageInt]}])
+    
+        existing_pages = Page.all({ documentId: @data[:documentId] }).data.keys
 
-        if existing_pages.length == 0
-            Page.create({
-                textContent: updated,
-                documentId: @documentId,
-                pageInt: params[:pageInt]
-            })
-        else
-            Page.update([
-                {
-                    textContent: updated
-                },
-                {
-                    documentId: @documentId,
-                    pageInt: params[:pageInt]
-                }
-            ])
+        if existing_pages.length > 0
+            Page.update({ textContent: updated },
+                        { documentId: @data[:documentId], pageInt: params[:pageInt]})
         end
 
-        pages = Page.read([
-            ["*"],
-            {
-                documentId: @documentId
-            }
-        ])
+        pages = Page.get_pages(@data[:documentId]).data.values
         self.store_data(pages)
     end
 
     def save_change(params)
-        textContent = Page.read([["textContent"], {pageInt: params[:pageInt]}])
+        p params[:pageInt]
+        p @data[params[:pageInt] - 1][:documentId]
+        p @data
+        p Page.all({pageInt: params[:pageInt], documentId: @data[params[:pageInt] - 1][:documentId] } )
+        textContent = Page.all({pageInt: params[:pageInt], documentId: @data[params[:pageInt] - 1][:documentId] } ).data[:textContent]
         newText = ""
         params[:textContent].each do |element|
             if element[:"0"] == 0 or element[:"0"] == 1
@@ -69,17 +45,5 @@ class Page < Model
             end
         end
         return newText
-    end
-
-    def self.get_pages(document_id)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-        
-        pages = Page.read([["*"], {documentId: document_id}])
-
-        instance = self.new(document_id)
-        instance.store_data(pages)
-
-        return instance
     end
 end
