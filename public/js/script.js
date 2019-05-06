@@ -17,14 +17,14 @@ function getCurrentElementChildIndex(elem) {
 function saveTextarea(element) {
     const page = getCurrentElementChildIndex(element)
 
-    const dmp = new diff_match_patch()
-    const changed = dmp.diff_main(oldTextarea[page - 1], element.value)
+    // const dmp = new diff_match_patch()
+    // const changed = dmp.diff_main(oldTextarea[page - 1], element.value);
     if (page < 1) { return; }
     console.log(page)
     $.ajax({
         type: "POST",
-        url: $('#edit-form').attr('action'),
-        data: JSON.stringify({ textContent: changed, pageInt: page }),
+        url: $('#edit-form').attr('action') + `/${page}`,
+        data: JSON.stringify({ textContent: element.value, pageInt: page }),
         dataType: "json",
         contentType: 'application/json;charset=UTF-8',
         success: () => {
@@ -35,9 +35,10 @@ function saveTextarea(element) {
 
 function removeTextarea(page) {
     console.log(page)
+    console.log('/page/delete' + $('#edit-form').attr('action').slice(5) + `/${page}`)
     $.ajax({
         type: "POST",
-        url: '/page/delete' + $('#edit-form').attr('action').slice(5),
+        url: '/page/delete' + $('#edit-form').attr('action').slice(5) + `/${page}`,
         data: { pageInt: page }
     })
 }
