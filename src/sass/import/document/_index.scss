@@ -10,6 +10,12 @@ main {
         height: auto;
         margin-left: 15%;
         margin-right: 15%;
+
+        #profile {
+            display: grid;
+            height: 400px;
+            margin: auto;
+        }
         
         .articles {
             display: grid;
@@ -23,17 +29,17 @@ main {
                 height: 340px;
                 grid-row: auto;
                 grid-template-rows: 300px 40px;
+                background-color: antiquewhite;
+                text-align: center;
                 
                 .preview {
                     display: grid;
                     grid-row: span 1;
-                    background-color: antiquewhite;
                 }
                 
                 .title {
                     display: grid;
                     grid-row: span 1;
-                    text-align: center;
 
                     button {
                         background:none!important;
@@ -52,14 +58,6 @@ main {
                     }
                 }
             }
-        }
-
-        #profile {
-            display: grid;
-            height: 400px;
-            // margin-top: 20%;
-            // align-items: center;
-            margin: auto;
         }
     }
 }
