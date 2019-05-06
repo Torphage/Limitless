@@ -3,10 +3,10 @@ header
         a href="/"
             p Limitless
     .profile
-        - if @current_user.logged_in?
+        - if @current_user.logged_in?()
             .profile-icon
-                a href="/profile/#{@current_user.data[:id]}"
-                    input type="image" src="/img/#{@current_user.data[:profile_pic]}" alt=""
+                a href="/profile/#{@current_user.id}"
+                    input type="image" src="/img/#{@current_user.profilePic}" alt="Profile"
                 form action="/logout" method="post"
                     input.profile-button type="submit" value="Logout"
         - else

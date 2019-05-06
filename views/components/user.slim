@@ -1,8 +1,10 @@
 main
     #content
         #profile
+            .user
+                h1 = @user.username
             .picture
-                img src="/img/#{@user.data[:profile_pic]}" alt="Doc Post"
+                img src="/img/#{@user.profilePic}" alt="Doc Post"
             - if @current_user.logged_in?()
                 form action="/document/create" method="post"
                     label for="title" Title
@@ -14,9 +16,10 @@ main
             - for doc in @docs
                 article
                     .preview
-                        img src="/img/#{doc[:preview]}" alt="Doc Post"
+                        img src="/img/#{doc.preview}" alt="Doc Post"
                     .title
-                        - if @current_user.logged_in?()
-                            - if doc[:users].include?(@current_user.data[:id])
-                                form action="/document/#{doc[:id]}" method="post"
-                                    button type="submit" = doc[:title]
+                        p = doc.title
+                    - if @current_user.logged_in?()
+                        - if doc.get_allowed_users().include?(@current_user.id)
+                            form action="/document/#{doc.id}" method="post"
+                                button type="submit" Edit

@@ -1,59 +1,26 @@
 require_relative 'page'
 
 class Document < Model
-    attr_accessor :data
+    table_name 'documents'
 
-    table Document.name.downcase() + "s"
+    column 'id', 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
+    column 'title', 'VARCHAR(255) NOT NULL'
+    column 'owner', 'VARCHAR(255) NOT NULL'
+    column 'preview', 'VARCHAR(255) NOT NULL'
 
-    def store_data(db_array)
-        @data = {
-            id: 		 db_array[0],
-            title:	     db_array[1],
-            owner: 		 db_array[2],
-            preview:	 db_array[3],
-            pages:       Page.get_pages(db_array[0]),
-            users:       Document.allowedUsers(db_array[0], db_array[2])
-        }
+    def allowed_users(users)
+        @allowed_users = users
     end
 
-    def self.addPage(params)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-        
-        int = db.execute('SELECT pageInt FROM pages WHERE documentId ORDER BY documentId ASC', [@data[:id]]) + 1
-
-        db.execute('INSERT INTO pages (textContent, documentId, pageInt) VALUES (?, ?, ?)', [params['textContent'], @data[:id], int])
-        index = 0
-        @data[:pages].each do |page|
-            if page.data[:id] == int
-                @data[:pages].delete_at(index)
-            end
-            i += 1
-        end
+    def get_allowed_users
+        @allowed_users
     end
 
-    def deletePage(page)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        db.execute('DELETE FROM pages WHERE documentId=? AND pageInt=?', [@data[:id], page])
+    def pages(pages)
+        @pages = pages
     end
 
-    def save(params)
-        if params[:pageInt] >= 1
-            @data[:pages].save(params)
-        end
-
-        return self
-    end
-
-    def self.allowedUsers(document_id, owner_id)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        allowed_users = db.execute('SELECT userId FROM users_documents WHERE documentId=?', [document_id]).map{ |user| user['userId'] }.flatten()
-        allowed_users << owner_id.to_i
-
-        return allowed_users
+    def get_pages
+        @pages
     end
 end

@@ -1,107 +1,51 @@
 class User < Model
-    attr_reader :data, :errors, :success
+    attr_reader :errors, :success
     
-    table User.name.downcase() + "s"
+    table_name 'users'
+    
+    column 'id', 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
+    column 'firstName', 'VARCHAR(255) NOT NULL'
+    column 'lastName', 'VARCHAR(255) NOT NULL'
+    column 'email', 'VARCHAR(255) NOT NULL UNIQUE'
+    column 'username', 'VARCHAR(255) NOT NULL UNIQUE'
+    column 'password', 'VARCHAR(255) NOT NULL'
+    column 'profilePic', 'VARCHAR(255)'
 
-    def initialize()
-        @data = nil
+    def initialize(dict)
+        super(dict)
         @errors = {}
         @success = ""
     end
 
-    def store_data(db_array)
-        @data = {
-            id: 		 db_array[0],
-            first_name:	 db_array[1],
-            last_name:	 db_array[2],
-            email: 		 db_array[3],
-            username:	 db_array[4],
-            password:	 db_array[5],
-            profile_pic: db_array[6]
-        }
+    def authorize(guessed_password)
+        return ((not @id.nil?()) and (BCrypt::Password.new(@password) == guessed_password))
+    end    
+
+    def logged_in?()
+        @username != "GuestUser" ? true : false
     end
 
-    def get_flash()
-        return @errors
-    end
-    
-    def authenticate(params)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        user = db.execute('SELECT id, password FROM users WHERE username=?', [params['username']])
-
-        if user.empty?()
-            @errors[:login] = 'Failed do login, user does not exist'
-            return false
-        end
-        
-        if BCrypt::Password.new(user[0]['password']) == params['password']
-            result = db.execute('SELECT * FROM users WHERE username=?', [params['username']])[0]
-            self.store_data(result)
-            @success = 'Login successful'
-            return true
-        else
-            @errors[:login] = 'Failed do login, wrong password'
-            return false
-        end
-    end
-    
-    def signup(params)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
+    def self.validate_email(email)
         email_validation_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-        if (params['email'] =~ email_validation_regex).nil?()
+        if (email =~ email_validation_regex).nil?()
             @errors[:signup] = 'Email is not correct, please use a valid email address'
             return false
-        elsif not db.execute('SELECT id FROM users WHERE username=?', [params['username']]).empty?()
-            @errors[:signup] = 'Failed do sign up, username already taken'
-            return false
-        elsif not db.execute('SELECT id FROM users WHERE email=?', [params['email']]).empty?()
-            @errors[:signup] = 'Failed do sign up, email already in use'
-            return false
+        else
+            return true
         end
+    end
 
-        file_name = SecureRandom.uuid
-        FileUtils.copy(params['profile_pic']['tempfile'], "./public/img/#{file_name}")
+    def self.signup(params)
+        if params['profile_pic']
+            file_name = SecureRandom.uuid
+            FileUtils.copy(params['profile_pic']['tempfile'], "./public/img/#{file_name}")
+        else
+            file_name = nil
+        end
 
         hashed_password = BCrypt::Password.create(params['password'])
 
-        db.execute('INSERT INTO users (firstName, lastName, email, username, password, profilePic) VALUES (?, ?, ?, ?, ?, ?)', [
-            params['first_name'], params['last_name'], params['email'], params['username'], hashed_password, file_name
-        ])
-
-        result = db.execute('SELECT * FROM users WHERE username=?', [params['username']])[0]
-        self.store_data(result)
-
-        @success = "Sign up successful"
-        return true
-    end
-
-    def logged_in?()
-        if @data != nil
-            return true
-        else
-            return false
-        end
-    end
-    
-    def logout()
-        @data = nil
-    end
-
-    def create_document(params)
-        db = SQLite3::Database.new('db/data.db')
-        db.results_as_hash = true
-
-        db.execute('INSERT INTO documents (title, owner, preview) VALUES (?, ?, "4f8ca52e-e888-4491-8f45-bb422b08c2a8")', [params["title"], @data[:id]])
-        document_id = db.execute('SELECT last_insert_rowid()')[0][0]
-        
-        params["guests"].split(",").map{ |guest| guest.strip() }.each do |guest|
-            guest_id = db.execute('SELECT id FROM users WHERE username=?', [guest])[0]["id"]
-            db.execute('INSERT INTO users_documents (userId, documentId) VALUES (?, ?)', [guest_id, document_id])
-        end
+        self.create({firstName: params['first_name'], lastName: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profilePic: file_name})
     end
 end
