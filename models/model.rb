@@ -18,6 +18,7 @@ class Model
         @args << args
         @columns ||= []
         @columns << name
+        attr_reader(name)
     end
 
     def self.get_columns
@@ -45,7 +46,7 @@ class Model
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
 
-        if block_given?
+        if (yield if block_given?)
             args = block.yield
             string = self.join(args)
             table_name = args[:join].get_table_name
