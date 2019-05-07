@@ -5,19 +5,19 @@ main
                 span.error= flash[:errors][:signup]
             br
             label for='first_name' First Name: 
-            input name='first_name' type='text'
+            input name='first_name' type='text' required=true
             br
             label for='last_name' Last Name: 
-            input name='last_name' type='text'
+            input name='last_name' type='text' required=true
             br
             label for='email' Email: 
-            input name='email' type='text'
+            input name='email' type='text' required=true
             br
             label for='username' Username: 
-            input name='username' type='text'
+            input name='username' type='text' required=true
             br
             label for='password' Password: 
-            input name='password' type='text'
+            input name='password' type='text' required=true
             br
             label for='profile_pic' Profile Picture: 
             input name='profile_pic' type='file' accept='image/*'
