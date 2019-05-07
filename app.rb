@@ -44,6 +44,10 @@ class App < Sinatra::Base
     get('/about') do
         slim(:'components/about')
     end
+
+    get('/license') do
+        slim(:'components/license')
+    end
     
     get('/signup') do
         slim(:'components/signup')
@@ -51,10 +55,13 @@ class App < Sinatra::Base
     
     post('/signup') do
         if User.get({username: params['username']})
+            flash[:errors] = {signup: "This username is already in use."}
             redirect(back)
         elsif User.get({email: params['email']})
+            flash[:errors] = {signup: "This email is already in use."}
             redirect(back)
         elsif not User.validate_email(params['email'])
+            flash[:errors] = {signup: "Please provide a valid email address."}
             redirect(back)
         end
 
@@ -76,6 +83,7 @@ class App < Sinatra::Base
             session[:user_id] = user.id
             redirect('/')
         else
+            flash[:errors] = {login: "Username or password is invalid"}
             redirect(back)
         end
     end
