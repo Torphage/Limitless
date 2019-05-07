@@ -11,11 +11,23 @@ class App < Sinatra::Base
     enable :sessions
     use Rack::Flash
 
+    helpers() do 
+        def store_pic(pic)
+            if pic.nil?
+                return nil
+            else
+                file_name = SecureRandom.uuid
+                FileUtils.copy(pic['tempfile'], "./public/img/#{file_name}")
+                return file_name
+            end
+        end
+    end
+
     before() do
         if session[:user_id]
             @current_user = User.get({id: session[:user_id]})
         else
-            @current_user = User.get({username: "GuestUser"}) #User.get({name: GuestUser})
+            @current_user = User.get({username: "GuestUser"})
         end
     end
 
@@ -38,7 +50,6 @@ class App < Sinatra::Base
     end
     
     post('/signup') do
-
         if User.get({username: params['username']})
             redirect(back)
         elsif User.get({email: params['email']})
@@ -47,7 +58,10 @@ class App < Sinatra::Base
             redirect(back)
         end
 
-        session[:user_id] = User.signup(params)
+        hashed_password = User.hash_password(params['password'])
+        profile_pic = store_pic(params['profile_pic'])
+        session[:user_id] = User.create({firstName: params['first_name'], lastName: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profilePic: profile_pic})
+
         redirect('/')
     end
 
@@ -85,7 +99,7 @@ class App < Sinatra::Base
 
     post('/document/create') do
         if @current_user.logged_in?()
-            document_id = Document.create({title: params['title'], owner: @current_user.id, preview: '4f8ca52e-e888-4491-8f45-bb422b08c2a8'})
+            document_id = Document.create({title: params['title'], owner: @current_user.id, preview: store_pic(params['post_pic'])})
             Page.create({documentId: document_id, textContent: "", pageInt: 1})
             DocumentUser.create({userId: @current_user.id, documentId: document_id})
 

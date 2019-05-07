@@ -36,16 +36,7 @@ class User < Model
         end
     end
 
-    def self.signup(params)
-        if params['profile_pic']
-            file_name = SecureRandom.uuid
-            FileUtils.copy(params['profile_pic']['tempfile'], "./public/img/#{file_name}")
-        else
-            file_name = nil
-        end
-
-        hashed_password = BCrypt::Password.create(params['password'])
-
-        self.create({firstName: params['first_name'], lastName: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profilePic: file_name})
+    def self.hash_password(password)
+        hashed_password = BCrypt::Password.create(password)
     end
 end
