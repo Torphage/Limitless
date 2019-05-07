@@ -25,7 +25,7 @@ class App < Sinatra::Base
 
     before() do
         if session[:user_id]
-            @current_user = User.get({id: session[:user_id]})
+            @current_user = User.get({user_id: session[:user_id]})
         else
             @current_user = User.get({username: "GuestUser"})
         end
@@ -35,7 +35,7 @@ class App < Sinatra::Base
         @docs = Document.all({})
 
         @docs.map do |doc|
-            doc.allowed_users(DocumentUser.all({documentId: doc.id}).map{ |temp| temp.userId })
+            doc.allowed_users(DocumentUser.all({document_id: doc.document_id}).map{ |user| user.user_id })
         end
 
         slim(:'components/index')
@@ -54,20 +54,22 @@ class App < Sinatra::Base
     end
     
     post('/signup') do
-        if User.get({username: params['username']})
+        user = User.all({username: params['username'], email: params['email']})
+        if user.map{|usr| usr.username == params['username']}.any?()
             flash[:errors] = {signup: "This username is already in use."}
             redirect(back)
-        elsif User.get({email: params['email']})
+        elsif user.map{|usr| usr.email == params['email']}.any?()
             flash[:errors] = {signup: "This email is already in use."}
             redirect(back)
-        elsif not User.validate_email(params['email'])
+        end
+        if not User.validate_email(params['email'])
             flash[:errors] = {signup: "Please provide a valid email address."}
             redirect(back)
         end
 
         hashed_password = User.hash_password(params['password'])
         profile_pic = store_pic(params['profile_pic'])
-        session[:user_id] = User.create({firstName: params['first_name'], lastName: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profilePic: profile_pic})
+        session[:user_id] = User.create({first_name: params['first_name'], last_name: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profile_pic: profile_pic})
 
         redirect('/')
     end
@@ -80,7 +82,7 @@ class App < Sinatra::Base
         user = User.get({username: params['username']})
 
         if user and user.authorize(params['password'])
-            session[:user_id] = user.id
+            session[:user_id] = user.user_id
             redirect('/')
         else
             flash[:errors] = {login: "Username or password is invalid"}
@@ -95,11 +97,14 @@ class App < Sinatra::Base
     end
 
     get('/profile/:id') do
-        @user = User.get({id: params['id'].to_i})
-        @docs = Document.all({id: params['id'].to_i}) { {join: User, through: DocumentUser} }
+        @user = User.get({user_id: params['id'].to_i})
+        if not @user
+            redirect('/')
+        end
+        @docs = Document.all({user_id: params['id'].to_i}) { {join: User, through: DocumentUser} }
 
         @docs.map do |doc|
-            doc.allowed_users(DocumentUser.all({documentId: doc.id}).map{ |temp| temp.userId })
+            doc.allowed_users(DocumentUser.all({document_id: doc.document_id}).map{ |user| user.user_id })
         end
 
         slim(:'components/user')
@@ -107,38 +112,35 @@ class App < Sinatra::Base
 
     post('/document/create') do
         if @current_user.logged_in?()
-            document_id = Document.create({title: params['title'], owner: @current_user.id, preview: store_pic(params['post_pic'])})
-            Page.create({documentId: document_id, textContent: "", pageInt: 1})
-            DocumentUser.create({userId: @current_user.id, documentId: document_id})
+            document_id = Document.create({title: params['title'], user_id: @current_user.user_id, preview: store_pic(params['post_pic'])})
 
-            p params['guests'].split(/([\s,]*)/)
             params['guests'].split(/([\s,]*)/).each do |guest|
-                p guest
-                guestId = User.get({username: guest})
-                if guestId
-                    DocumentUser.create({userId: guestId, documentId: document_id})
+                guest_id = User.get({username: guest})
+                if guest_id
+                    DocumentUser.create({user_id: guest_id, document_id: document_id})
                 end
             end
         end
         redirect('/')
     end
 
-    post('/document/:id') do
-        @doc = Document.get({id: params['id'].to_i})
+    post('/document/:document_id') do
+        @doc = Document.get({document_id: params['document_id'].to_i})
 
-        @doc.allowed_users(DocumentUser.all({documentId: @doc.id}).map{ |temp| temp.userId })
+        @doc.allowed_users(DocumentUser.all({document_id: @doc.document_id}).map{ |user| user.user_id })
 
-        if @doc.get_allowed_users().include?(@current_user.id)
-            redirect("/document/#{params["id"]}")
+        if @doc.get_allowed_users().include?(@current_user.user_id)
+            redirect("/document/#{params["document_id"]}")
         else
             redirect('/')
         end
     end
 
     get('/document/:id') do
-        if @current_user.logged_in?()            
-            @docId = params['id'].to_i
-            @pages = Page.all({documentId: @docId})
+        @doc = Document.get({document_id: params['id'].to_i})
+
+        if @doc and @current_user.logged_in?()            
+            @pages = Page.all({document_id: @doc.document_id})
 
             slim(:'components/document')
         else
@@ -146,23 +148,23 @@ class App < Sinatra::Base
         end
     end
 
-    post('/save/:docId/:pageId') do
+    post('/save/:document_id/:page_number') do
         if @current_user.logged_in?()    
-            page = Page.get({pageInt: params['pageId'].to_i, documentId: params['docId']})
+            page = Page.get({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
             
             change = JSON.parse(request.body.read, symbolize_names: true)
 
             if page
-                Page.update({ textContent: change[:textContent] }, { documentId: params['docId'].to_i, pageInt: params['pageId'].to_i })
+                Page.update({text_content: change[:text_content] }, { document_id: params['document_id'].to_i, page_number: params['page_number'].to_i})
             else
-                Page.create({documentId: params['docId'].to_i, pageInt: params['pageId'].to_i, textContent: change[:textContent]})
+                Page.create({text_content: change[:text_content], document_id: params['document_id'].to_i, page_number: params['page_number'].to_i})
             end
         end
     end
 
-    post('/page/delete/:docId/:pageId') do
+    post('/page/delete/:document_id/:page_number') do
         if @current_user.logged_in?()
-            Page.delete({pageInt: params['pageId'].to_i, documentId: params['docId'].to_i})
+            Page.delete({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
         end
     end
 end

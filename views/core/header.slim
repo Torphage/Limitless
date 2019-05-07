@@ -5,8 +5,8 @@ header
     .profile
         - if @current_user.logged_in?()
             .profile-icon
-                a href="/profile/#{@current_user.id}"
-                    input type="image" src="/img/#{@current_user.profilePic}" alt="Profile"
+                a href="/profile/#{@current_user.user_id}"
+                    input type="image" src="/img/#{@current_user.profile_pic}" alt="Profile"
                 form action="/logout" method="post"
                     input.profile-button type="submit" value="Logout"
         - else

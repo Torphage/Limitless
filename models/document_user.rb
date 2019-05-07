@@ -1,6 +1,6 @@
 class DocumentUser < Model
-    table_name 'documents_users'
+    table 'documents_users'
     
-    column 'documentId', 'INTEGER NOT NULL'
-    column 'userId', 'INTEGER NOT NULL'
+    column 'document_id', 'INTEGER NOT NULL REFERENCES documents(document_id) ON UPDATE CASCADE'
+    column 'user_id', 'INTEGER NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE'
 end

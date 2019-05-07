@@ -1,7 +1,7 @@
 main
     #content
         .document
-            form#edit-form action="/save/#{@docId}" method="post"
+            form#edit-form action="/save/#{@doc.document_id}" method="post"
                 - for page in @pages
                     / p #{page[:textContent].to_s}
-                    textarea name="textContent" = page.textContent
+                    textarea name="textContent" = page.text_content

@@ -24,7 +24,7 @@ function saveTextarea(element) {
     $.ajax({
         type: "POST",
         url: $('#edit-form').attr('action') + `/${page}`,
-        data: JSON.stringify({ textContent: element.value, pageInt: page }),
+        data: JSON.stringify({ text_content: element.value, page_number: page }),
         dataType: "json",
         contentType: 'application/json;charset=UTF-8',
         success: () => {
@@ -39,7 +39,7 @@ function removeTextarea(page) {
     $.ajax({
         type: "POST",
         url: '/page/delete' + $('#edit-form').attr('action').slice(5) + `/${page}`,
-        data: { pageInt: page }
+        data: { page_number: page }
     })
 }
 
