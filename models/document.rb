@@ -6,7 +6,7 @@ class Document < Model
     column 'id', 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
     column 'title', 'VARCHAR(255) NOT NULL'
     column 'owner', 'VARCHAR(255) NOT NULL'
-    column 'preview', 'VARCHAR(255) NOT NULL'
+    column 'preview', 'VARCHAR(255)'
 
     def allowed_users(users)
         @allowed_users = users
