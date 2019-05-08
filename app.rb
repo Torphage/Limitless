@@ -125,6 +125,15 @@ class App < Sinatra::Base
         end
         redirect('/')
     end
+    
+    post('/document/delete/:document_id') do
+        if @current_user.logged_in?()
+            document = Document.get({document_id: params['document_id'].to_i})
+            FileUtils.remove_file("./public/img/#{document.preview}")
+            Document.delete({document_id: params['document_id'].to_i})
+        end
+        redirect(back)
+    end
 
     post('/document/:document_id') do
         @doc = Document.get({document_id: params['document_id'].to_i})
