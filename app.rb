@@ -54,7 +54,7 @@ class App < Sinatra::Base
     end
     
     post('/signup') do
-        user = User.all({username: params['username'], email: params['email']})
+        user = User.all({username: params['username'], email: params['email']}, "", "OR")
         if user.map{|usr| usr.username == params['username']}.any?()
             flash[:errors] = {signup: "This username is already in use."}
             redirect(back)
@@ -69,7 +69,9 @@ class App < Sinatra::Base
 
         hashed_password = User.hash_password(params['password'])
         profile_pic = store_pic(params['profile_pic'])
+
         session[:user_id] = User.create({first_name: params['first_name'], last_name: params['last_name'], email: params['email'], username: params['username'], password: hashed_password, profile_pic: profile_pic})
+        flash[:success] = {signup: "Registration successful"}
 
         redirect('/')
     end
@@ -114,10 +116,10 @@ class App < Sinatra::Base
         if @current_user.logged_in?()
             document_id = Document.create({title: params['title'], user_id: @current_user.user_id, preview: store_pic(params['post_pic'])})
 
-            params['guests'].split(/([\s,]*)/).each do |guest|
-                guest_id = User.get({username: guest})
-                if guest_id
-                    DocumentUser.create({user_id: guest_id, document_id: document_id})
+            params['guests'].split(/([\s,]+)/).each do |guest|
+                user = User.get({username: guest})
+                if user
+                    DocumentUser.create({user_id: user.user_id, document_id: document_id})
                 end
             end
         end
