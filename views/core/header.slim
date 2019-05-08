@@ -8,7 +8,7 @@ header
                 a href="/profile/#{@current_user.user_id}"
                     input type="image" src="/img/#{@current_user.profile_pic}" alt="Profile"
                 form action="/logout" method="post"
-                    input.profile-button type="submit" value="Logout"
+                    button.profile-button type="submit" Logout
         - else
             .profile-options
                 a.profile-button href='/login' Login
