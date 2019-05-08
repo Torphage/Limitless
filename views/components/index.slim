@@ -1,13 +1,4 @@
 main
     #content
         .articles
-            - for doc in @docs
-                article
-                    .preview
-                        img src="/img/#{doc.preview}" alt="Document"
-                    .title
-                        p = doc.title
-                    - if @current_user.logged_in?()
-                        - if doc.get_allowed_users().include?(@current_user.user_id)
-                            form action="/document/#{doc.document_id}" method="post"
-                                button type="submit" Edit
+            == slim(:'components/list_documents')
