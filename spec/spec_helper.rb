@@ -18,4 +18,7 @@ Capybara.app = App
 Capybara.server = :webrick
 #Capybara.app_host = 'http://localhost:'
 
-Capybara.default_driver = :selenium_chrome #:selenium_chrome_headless are also registered
+# Capybara.default_driver = :selenium_chrome #:selenium_chrome_headless are also registered
+Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
