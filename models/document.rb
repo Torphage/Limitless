@@ -27,6 +27,6 @@ class Document < Model
     def self.create(dict)
         document_id = super
         Page.create({document_id: document_id, text_content: "", page_number: 1}) { {user_id: dict[:user_id], document_id: document_id} }
-        return @document_id
+        return document_id
     end
 end
