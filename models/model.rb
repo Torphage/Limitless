@@ -52,6 +52,7 @@ class Model
     def self.all(dict, limit="", conditional="AND", &block) 
         db = SQLite3::Database.new('db/data.db')
         db.results_as_hash = true
+        object = dict.select { |key, value| @columns.include?(key.to_s) }
 
         if (yield if block_given?)
             args = block.yield
@@ -62,29 +63,32 @@ class Model
             table = self.get_table
         end
 
-        condition = (not dict.empty?()) ? " WHERE #{table}.#{dict.keys.map{ |k| k.to_s }.join(" = ? #{conditional} #{table}.")} = ?" : ""
-        result = db.execute(string + condition + limit, dict.values)
+        condition = (not object.empty?()) ? " WHERE #{table}.#{object.keys.map(&:to_s).join(" = ? #{conditional} #{table}.")} = ?" : ""
+        result = db.execute(string + condition + limit, object.values)
 
         result.map { |row| self.new(row) }
     end
 
     def self.create(dict)
         db = SQLite3::Database.new('db/data.db')
+        object = dict.select { |key, value| @columns.include?(key.to_s) }
 
-        db.execute("INSERT INTO #{@table} (#{dict.keys.map(&:to_s).join(',')}) VALUES (#{dict.keys.map{ |_| '?'}.join(",")})", dict.values)
+        db.execute("INSERT INTO #{@table} (#{object.keys.map(&:to_s).join(',')}) VALUES (#{object.keys.map{ |_| '?'}.join(",")})", object.values)
         db.execute('SELECT last_insert_rowid()')[0][0]
     end
 
     def self.update(change, condition)
         db = SQLite3::Database.new('db/data.db')
-
-        db.execute("UPDATE #{@table} SET #{change.keys.map(&:to_s).join("=?,")}=? WHERE #{condition.keys.map(&:to_s).join("=? AND ")}=?", (change.values << condition.values).flatten())
+        object = change.select { |key, value| @columns.include?(key.to_s) }
+        
+        db.execute("UPDATE #{@table} SET #{object.keys.map(&:to_s).join("=?,")}=? WHERE #{condition.keys.map(&:to_s).join("=? AND ")}=?", (object.values << condition.values).flatten())
     end
 
     def self.delete(dict)
         db = SQLite3::Database.new('db/data.db')
+        object = dict.select { |key, value| @columns.include?(key.to_s) }
         
-        db.execute("DELETE FROM #{@table} WHERE #{dict.keys.map(&:to_s).join('=? AND ')}=?", dict.values)
+        db.execute("DELETE FROM #{@table} WHERE #{object.keys.map(&:to_s).join('=? AND ')}=?", object.values)
     end
     
     private
