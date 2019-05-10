@@ -5,7 +5,7 @@ class Document < Model
 
     column 'document_id', 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
     column 'title', 'VARCHAR(255) NOT NULL'
-    column 'user_id', 'VARCHAR(255) NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE'
+    column 'user_id', 'INTEGER NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE'
     column 'preview', 'VARCHAR(255)'
 
     def allowed_users(users)
