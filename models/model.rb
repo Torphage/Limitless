@@ -100,7 +100,7 @@ class Model
     end
     
     def self.join(dict)
-        core = "SELECT #{self.get_table}.* FROM #{self.get_table}"
+        core = "SELECT DISTINCT #{self.get_table}.* FROM #{self.get_table}"
 
         join = " INNER JOIN #{dict[:join].get_table} USING (#{dict[:join].get_table[0..-2]}_id)"
         through = dict.key?(:through) ? " INNER JOIN #{dict[:through].get_table} USING (#{self.get_table[0..-2]}_id)" : ""
