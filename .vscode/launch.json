@@ -5,12 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Local File",
-            "type": "Ruby",
-            "request": "launch",
-            "useBundler": true,
-            "cwd": "${workspaceRoot}",
-            "preLaunchTask": "rake: run"
-        }
+			"name": "Run API",
+			"type": "Ruby",
+			"request": "launch",
+			"cwd": "${workspaceRoot}",
+			"useBundler": true,
+			"pathToBundler": "C:\\Ruby24-x64\\bin\\bundle.bat",
+			"showDebuggerOutput": true,
+			"pathToRDebugIDE": "C:\\Ruby24-x64\\bin\\rdebug-ide.bat",
+			"program": "C:\\Ruby24-x64\\bin\\rackup",
+			"args": [
+			    "-p", "9292",
+			    "-E", "development"
+			]
+		},
     ]
 }

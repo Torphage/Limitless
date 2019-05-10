@@ -8,5 +8,6 @@
             - if doc.get_allowed_users().include?(@current_user.user_id)
                 form action="/document/#{doc.document_id}" method="post"
                     button type="submit" Edit
-                form action="document/delete/#{doc.document_id}" method="post"
-                    button type="submit" Delete
+                - if doc.user_id.to_i == @current_user.user_id
+                    form action="/document/delete/#{doc.document_id}" method="post"
+                        button type="submit" Delete

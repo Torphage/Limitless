@@ -14,3 +14,5 @@ gem 'selenium-webdriver'
 gem 'racksh'
 gem 'sass-globbing'
 gem "webdrivers"
+gem 'ruby-debug-ide'
+gem 'debase'
