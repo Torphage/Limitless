@@ -201,11 +201,11 @@ class App < Sinatra::Base
     # @see Document.get
     post('/document/:document_id') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: @doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
-
+            doc = Document.get({document_id: params['document_id'].to_i})
+            
+            allowed_users = DocumentUser.all({document_id: doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            
             if allowed_users
-                @doc = Document.get({document_id: params['document_id'].to_i})
-
                 redirect("/document/#{params["document_id"]}")
             end
         else
@@ -215,18 +215,18 @@ class App < Sinatra::Base
 
     # Open a document.
     #
-    # param :id [Integer] The ID of the document.
+    # param :document_id [Integer] The ID of the document.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
     # @see Document.get
     # @see Page.all
-    get('/document/:id') do
+    get('/document/:document_id') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: @doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
 
             if allowed_users
-                @doc = Document.get({document_id: params['id'].to_i})
+                @doc = Document.get({document_id: params['document_id'].to_i})
 
                 if @doc and             
                     @pages = Page.all({document_id: @doc.document_id})
@@ -251,7 +251,7 @@ class App < Sinatra::Base
     # @see Page.create
     post('/save/:document_id/:page_number') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: @doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
 
             if allowed_users
                 page = Page.get({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
@@ -277,7 +277,7 @@ class App < Sinatra::Base
     # @see Page.delete
     post('/page/delete/:document_id/:page_number') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: @doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
 
             if allowed_users
                 Page.delete({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
