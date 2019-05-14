@@ -1,4 +1,4 @@
-app.rb 8b761e7fc17a76043dd50c3a417b66efa16564b3
+app.rb 095d06ef501b1facba57c0fb6b3cb16836c0cc6c
 models/document.rb 408d730a317d53a706f1b3c14e2da5a7cb5656a8
 models/document_user.rb 94b97454dc4f033a30f70a99f738f7abd996b693
 models/helpers.rb e51d66710b62e704201f096f10290e9226f8786d

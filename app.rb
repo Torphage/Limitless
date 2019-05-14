@@ -171,7 +171,7 @@ class App < Sinatra::Base
     
     # Deletes a post.
     #
-    # param :document_id [Integer] The document's ID of which post to delete.
+    # @param :document_id [Integer] The document's ID of which post to delete.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
@@ -194,7 +194,7 @@ class App < Sinatra::Base
 
     # Validate if user can open a document.
     #
-    # param :document_id [Integer] The ID of the document.
+    # @param :document_id [Integer] The ID of the document.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
@@ -215,7 +215,7 @@ class App < Sinatra::Base
 
     # Open a document.
     #
-    # param :document_id [Integer] The ID of the document.
+    # @param :document_id [Integer] The ID of the document.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
@@ -241,8 +241,8 @@ class App < Sinatra::Base
 
     # Saves a specified page on a document.
     #
-    # param :document_id [Integer] The ID of the document.
-    # param :page_number [Integer] The page number.
+    # @param :document_id [Integer] The ID of the document.
+    # @param :page_number [Integer] The page number.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
@@ -269,8 +269,8 @@ class App < Sinatra::Base
 
     # Delete a page on a specified document.
     #
-    # param :document_id [Integer] The ID of the document.
-    # param :page_number [Integer] The page number.
+    # @param :document_id [Integer] The ID of the document.
+    # @param :page_number [Integer] The page number.
     #
     # @see User#logged_in?
     # @see DocumentUser.all
