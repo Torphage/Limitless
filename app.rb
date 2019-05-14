@@ -15,7 +15,7 @@ class App < Sinatra::Base
     # Get the currently logged in user.
     #
     # @see User.get
-    before('/') do
+    before() do
         if session[:user_id]
             @current_user = User.get({user_id: session[:user_id]})
         else
