@@ -16,3 +16,5 @@ gem 'sass-globbing'
 gem "webdrivers"
 gem 'ruby-debug-ide'
 gem 'debase'
+gem 'yard'
+gem 'yard-sinatra', git: 'https://github.com/chrisb/yard-sinatra'
