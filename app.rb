@@ -179,9 +179,8 @@ class App < Sinatra::Base
     # @see Document.delete
     post('/document/delete/:document_id') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
-
-            if allowed_users
+            # Only the owner should be able to delete the document.
+            if params["document_id"].to_i == session[:user_id]
                 document = Document.get({document_id: params['document_id'].to_i})
                 if not document.preview.nil?()
                     FileUtils.remove_file("./public/img/#{document.preview}")
@@ -200,12 +199,10 @@ class App < Sinatra::Base
     # @see DocumentUser.all
     # @see Document.get
     post('/document/:document_id') do
-        if @current_user.logged_in?()
-            doc = Document.get({document_id: params['document_id'].to_i})
-            
-            allowed_users = DocumentUser.all({document_id: doc.document_id}).any? { |doc_user| doc_user.user_id == session[:user_id] }
-            
-            if allowed_users
+        if @current_user.logged_in?()            
+            user_allowed = DocumentUser.all({user_id: session[:user_id], document_id: params["document_id"].to_i})
+
+            if user_allowed.any?()
                 redirect("/document/#{params["document_id"]}")
             end
         else
@@ -234,9 +231,9 @@ class App < Sinatra::Base
                     slim(:'components/document')
                 end
             end
-        else
-            redirect('/')
         end
+
+        redirect('/')
     end
 
     # Saves a specified page on a document.
@@ -251,9 +248,9 @@ class App < Sinatra::Base
     # @see Page.create
     post('/save/:document_id/:page_number') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            user_allowed = DocumentUser.all({user_id: session[:user_id], document_id: params["document_id"].to_i})
 
-            if allowed_users
+            if user_allowed.any?()
                 page = Page.get({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
                 
                 change = JSON.parse(request.body.read, symbolize_names: true)
@@ -277,9 +274,9 @@ class App < Sinatra::Base
     # @see Page.delete
     post('/page/delete/:document_id/:page_number') do
         if @current_user.logged_in?()
-            allowed_users = DocumentUser.all({document_id: params['document_id'].to_i}).any? { |doc_user| doc_user.user_id == session[:user_id] }
+            user_allowed = DocumentUser.all({user_id: session[:user_id], document_id: params["document_id"].to_i})
 
-            if allowed_users
+            if user_allowed.any?()
                 Page.delete({page_number: params['page_number'].to_i, document_id: params['document_id'].to_i})
             end
         end
