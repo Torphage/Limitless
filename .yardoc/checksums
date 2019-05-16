@@ -1,7 +1,7 @@
-app.rb 095d06ef501b1facba57c0fb6b3cb16836c0cc6c
+app.rb e59875ed96674d7009a4dee2fc72099a8f6d382a
 models/document.rb 408d730a317d53a706f1b3c14e2da5a7cb5656a8
 models/document_user.rb 94b97454dc4f033a30f70a99f738f7abd996b693
-models/helpers.rb e51d66710b62e704201f096f10290e9226f8786d
+models/helpers.rb 7b2ff0a77a16780ce0d794b90fa3df1ad843ce44
 models/model.rb d9625bf85c1db6a593158bdb03c65036acd891f1
 models/page.rb 44dcf7d9a36317eeb3866508c039403c494dc1bb
 models/user.rb 0ac16a5cac6ed6f74e06e6eba27e2fbc0b45cb3e

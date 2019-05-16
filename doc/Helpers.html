@@ -103,7 +103,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#store_pic-class_method" title="store_pic (class method)">.<strong>store_pic</strong>(pic)  &#x21d2; Object </a>
+      <a href="#store_pic-class_method" title="store_pic (class method)">.<strong>store_pic</strong>(pic)  &#x21d2; nil, String </a>
     
 
     
@@ -136,7 +136,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="store_pic-class_method">
   
-    .<strong>store_pic</strong>(pic)  &#x21d2; <tt>Object</tt> 
+    .<strong>store_pic</strong>(pic)  &#x21d2; <tt>nil</tt>, <tt>String</tt> 
   
 
   
@@ -172,6 +172,38 @@
   
 </ul>
 
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>nil</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>If pic is nil.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The file name of the newly stored picture.</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 
 
@@ -181,18 +213,18 @@
       <pre class="lines">
 
 
-6
-7
-8
 9
 10
 11
 12
 13
-14</pre>
+14
+15
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'models/helpers.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'models/helpers.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_store_pic'>store_pic</span><span class='lparen'>(</span><span class='id identifier rubyid_pic'>pic</span><span class='rparen'>)</span>
     <span class='kw'>if</span> <span class='id identifier rubyid_pic'>pic</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -213,7 +245,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue May 14 13:29:02 2019 by
+  Generated on Thu May 16 10:49:43 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.19 (ruby-2.4.2).
 </div>
